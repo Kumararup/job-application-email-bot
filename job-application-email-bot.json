@@ -1,0 +1,196 @@
+{
+  "name": "job-application-email-bot",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -400,
+        -64
+      ],
+      "id": "07931160-9d8b-486c-b21a-ba0ff6543c77",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1e79BIT4Je-dDEz3W7ty6kQW7iBDWFV4_KQMbXclV-pU/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "job",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1e79BIT4Je-dDEz3W7ty6kQW7iBDWFV4_KQMbXclV-pU/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -192,
+        -64
+      ],
+      "id": "19eba6b5-5959-472e-a09d-a764a5fea9aa",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "jTjJqPi96BOfKrDJ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "959f2a67-dd06-4b24-ba5d-9dc8f043a3a5",
+              "name": "emailBody",
+              "value": "=Dear Recruitment Team,\nI hope you are doing well.\nMy name is Kumar Arup Ratan Barua, and I am currently studying Hospitality Operations Management at the Escola de Hotelaria e Turismo do Porto, Portugal.\nI have over five years of management experience in the hospitality industry, including my role as Assistant Manager at Burger King in Sweden, and I recently completed my hotel internship at The Editory Boulevard Aliados in Porto. During my internship, I gained practical experience in front office operations, housekeeping, food & beverage, guest services, and Opera PMS.\nI am very interested in joining an international cruise line and would like to be considered for any suitable positions, including:\n• Hotel Operations Trainee\n• Assistant Waiter\n• Restaurant Steward\n• Bar Utility\n• Housekeeping Attendant\n• Guest Services\n• Galley Utility\nPlease find my CV attached for your review. I would greatly appreciate the opportunity to discuss how my experience, education, and enthusiasm can contribute to your clients’ onboard hospitality teams.\nI am available to join immediately and am willing to relocate worldwide.\nThank you for your time and consideration. I look forward to hearing from you.\n\nKind regards,\nKumar Arup Ratan Barua\nPorto, Portugal\nPhone: +351 937 490 533\nEmail: arupkumar17@outlook.com\nLinkedIn: www.linkedin.com/in/arup-barua-85830337",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        -64
+      ],
+      "id": "016cb347-0994-4a66-817b-7230a5f973ea",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "application for hospitality internship",
+        "emailType": "text",
+        "message": "={{ $json.emailBody }}",
+        "options": {
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {}
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        -64
+      ],
+      "id": "2a6512a1-8445-4781-8cab-854025212a11",
+      "name": "Send a message1",
+      "webhookId": "f5b793b9-afa9-4e61-a492-0c4217fbfa1d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "2HbgBv0boFMAloE9",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1ktfTcnLin6Wiv6uSdKFv5954SgCs6Oun",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        224,
+        -64
+      ],
+      "id": "f1a61d8f-6ee4-413a-be7f-d1624d6e8767",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "V9eEyFJwRgQPEbcW",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "2815d09e-2c80-41d2-9ecf-1cb00c0e796e",
+  "meta": {
+    "instanceId": "e19737798f8a291075577667ef615069cbe49a965d9ab1e06668ea8300b30224"
+  },
+  "nodeGroups": [],
+  "id": "ADzuuj82ekizh0Ts",
+  "tags": []
+}
